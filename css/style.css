@@ -418,29 +418,220 @@ button, input, textarea, select { font: inherit; }
   line-height: 0;
 }
 
-.placeholder {
-  display: grid;
-  min-height: 70vh;
-  place-content: center;
-  padding: 4rem 1.5rem;
+.invitation {
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow-x: hidden;
+  overflow-x: clip;
+  padding-block: clamp(3rem, 6.5svh, 5.25rem) clamp(3.5rem, 8svh, 5.5rem);
+  padding-right: max(1.35rem, env(safe-area-inset-right));
+  padding-left: max(1.35rem, env(safe-area-inset-left));
   background: var(--ivory-light);
   text-align: center;
 }
 
-.placeholder:focus { outline: none; }
+.invitation:focus { outline: none; }
 
-.placeholder__ornament {
-  margin: 0 0 1rem;
-  color: var(--champagne);
-  font-size: 1rem;
+.invitation__inner {
+  width: min(100%, 38rem);
+  margin-inline: auto;
 }
 
-.placeholder h2 {
-  max-width: 28rem;
+.invitation__cross {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 1.65rem;
+  margin: 0 auto clamp(0.8rem, 1.8svh, 1.4rem);
+  background: var(--champagne);
+}
+
+.invitation__cross::after {
+  position: absolute;
+  top: 0.48rem;
+  left: 50%;
+  width: 0.82rem;
+  height: 1px;
+  background: inherit;
+  content: "";
+  transform: translateX(-50%);
+}
+
+.invitation__kicker {
   margin: 0;
-  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  color: var(--champagne);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(0.58rem, 2.6vw, 0.7rem);
+  letter-spacing: 0.24em;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.invitation__header { margin-top: clamp(1.1rem, 2.5svh, 2.75rem); }
+
+.invitation__names {
+  display: grid;
+  justify-items: center;
+  margin: 0;
   font-weight: 400;
-  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.invitation__name {
+  font-size: clamp(2.25rem, 13vw, 4.6rem);
+  letter-spacing: 0.08em;
+  line-height: 0.95;
+}
+
+.invitation__ampersand {
+  margin-block: 0.55rem 0.65rem;
+  color: var(--champagne);
+  font-size: clamp(1.45rem, 6vw, 2rem);
+  font-style: italic;
+  line-height: 1;
+}
+
+.invitation__wording {
+  max-width: 18rem;
+  margin: clamp(0.9rem, 2.2svh, 1.6rem) auto 0;
+  color: var(--muted);
+  font-size: clamp(0.94rem, 3.8vw, 1.08rem);
+  font-style: italic;
+  line-height: 1.65;
+}
+
+.invitation__divider {
+  display: flex;
+  width: min(11rem, 58vw);
+  align-items: center;
+  gap: 0.75rem;
+  margin: clamp(1.55rem, 3.6svh, 3.75rem) auto;
+}
+
+.invitation__divider::before,
+.invitation__divider::after {
+  height: 1px;
+  flex: 1;
+  background: rgb(184 149 95 / 34%);
+  content: "";
+}
+
+.invitation__divider span {
+  width: 0.3rem;
+  height: 0.3rem;
+  border: 1px solid var(--champagne);
+  transform: rotate(45deg);
+}
+
+.event-date {
+  display: grid;
+  gap: clamp(0.5rem, 1.2svh, 0.7rem);
+  font-family: Arial, Helvetica, sans-serif;
+  font-style: normal;
+  text-transform: uppercase;
+}
+
+.event-date__date {
+  color: var(--charcoal);
+  font-size: clamp(1.08rem, 5.5vw, 1.5rem);
+  letter-spacing: 0.18em;
+}
+
+.event-date__day {
+  color: var(--champagne);
+  font-size: 0.7rem;
+  letter-spacing: 0.32em;
+}
+
+.event-details__ceremony {
+  display: grid;
+  gap: 0.45rem;
+  margin: clamp(1.25rem, 2.8svh, 2.25rem) 0 0;
+}
+
+.event-details__ceremony span {
+  color: var(--muted);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.event-details__ceremony strong {
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.event-venue {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: clamp(1.15rem, 2.5svh, 2rem);
+  font-style: normal;
+}
+
+.event-venue strong {
+  font-size: clamp(1.25rem, 5vw, 1.65rem);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.event-venue span {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.location-link {
+  display: inline-flex;
+  min-height: 2.8rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: clamp(1.25rem, 2.8svh, 2rem);
+  padding: 0.8rem 1.45rem;
+  border: 1px solid var(--champagne);
+  border-radius: 999px;
+  color: var(--charcoal);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.19em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.location-link:hover { background: rgb(216 195 159 / 16%); }
+
+.location-link:focus-visible {
+  outline: 2px solid var(--charcoal);
+  outline-offset: 4px;
+}
+
+.scripture {
+  max-width: 28rem;
+  margin: clamp(1.5rem, 3svh, 2.25rem) auto 0;
+  padding-top: clamp(1rem, 2.2svh, 1.75rem);
+  border-top: 1px solid rgb(184 149 95 / 28%);
+}
+
+.scripture blockquote { margin: 0; }
+
+.scripture p {
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(0.9rem, 3.6vw, 1.02rem);
+  font-style: italic;
+  line-height: 1.55;
+}
+
+.scripture figcaption {
+  margin-top: 0.5rem;
+  color: var(--champagne);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.64rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
 }
 
 @keyframes draw-route {
@@ -512,6 +703,88 @@ button, input, textarea, select { font: inherit; }
 
   .meeting-scene { top: 47%; }
   .wedding-scene { top: 35%; width: min(28vw, 22rem); }
+
+  .invitation { padding-block: 7.5rem 7rem; }
+  .invitation__cross { height: 1.65rem; margin-bottom: 1.4rem; }
+  .invitation__header { margin-top: 2.75rem; }
+  .invitation__ampersand { margin-block: 0.55rem 0.65rem; }
+  .invitation__wording { margin-top: 1.6rem; line-height: 1.65; }
+  .invitation__divider { margin-block: 3.75rem; }
+  .event-date { gap: 0.7rem; }
+  .event-details__ceremony { margin-top: 2.25rem; }
+  .event-venue { margin-top: 2rem; }
+  .location-link { margin-top: 2rem; }
+  .scripture { margin-top: 4rem; padding-top: 3rem; }
+  .scripture p { font-size: 1.08rem; line-height: 1.75; }
+  .scripture figcaption { margin-top: 1rem; }
+}
+
+
+@media (max-width: 30rem) and (max-height: 47.5rem) {
+  .invitation { padding-top: clamp(2.5rem, 5.8svh, 3rem); }
+
+  .invitation__cross {
+    height: 1.45rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .invitation__cross::after { top: 0.4rem; }
+  .invitation__header { margin-top: 0.9rem; }
+  .invitation__name { font-size: clamp(2.2rem, 12vw, 3rem); }
+  .invitation__ampersand { margin-block: 0.4rem 0.45rem; }
+
+  .invitation__wording {
+    margin-top: 0.75rem;
+    line-height: 1.55;
+  }
+
+  .invitation__divider {
+    margin-block: clamp(1.25rem, 3svh, 1.45rem);
+  }
+
+  .event-date { gap: 0.45rem; }
+  .event-details__ceremony { margin-top: 1.15rem; }
+  .event-venue { margin-top: 1.1rem; }
+  .location-link { margin-top: 1.2rem; }
+}
+
+
+@media (max-width: 30rem) and (max-height: 42rem) {
+  .invitation { padding-top: 2rem; }
+
+  .invitation__cross {
+    height: 1.3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .invitation__cross::after { top: 0.36rem; }
+  .invitation__header { margin-top: 0.7rem; }
+  .invitation__name { font-size: clamp(2.15rem, 11.5vw, 2.8rem); }
+  .invitation__ampersand { margin-block: 0.3rem 0.35rem; }
+
+  .invitation__wording {
+    margin-top: 0.6rem;
+    line-height: 1.5;
+  }
+
+  .invitation__divider { margin-block: 1rem; }
+  .event-date { gap: 0.35rem; }
+  .event-date__date { letter-spacing: 0.15em; }
+  .event-details__ceremony { margin-top: 0.85rem; }
+  .event-venue { margin-top: 0.85rem; }
+  .location-link { margin-top: 1rem; }
+
+  .scripture {
+    margin-top: 1.25rem;
+    padding-top: 0.85rem;
+  }
+
+  .scripture p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .scripture figcaption { margin-top: 0.4rem; }
 }
 
 @media (max-height: 43rem) {
