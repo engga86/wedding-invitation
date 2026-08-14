@@ -1,0 +1,553 @@
+:root {
+  color-scheme: light;
+  --ivory: #f7f0e3;
+  --ivory-light: #fffaf1;
+  --champagne: #b8955f;
+  --champagne-soft: #d8c39f;
+  --charcoal: #36322e;
+  --muted: #746d64;
+  --rose: #a85d61;
+  --flight-duration: 3.6s;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--ivory);
+  color: var(--charcoal);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+button, input, textarea, select { font: inherit; }
+
+.opening {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  background: var(--ivory);
+}
+
+.opening::before,
+.opening::after {
+  position: absolute;
+  z-index: -1;
+  width: clamp(12rem, 52vw, 36rem);
+  height: clamp(12rem, 52vw, 36rem);
+  border: 1px solid rgb(184 149 95 / 14%);
+  border-radius: 50%;
+  content: "";
+}
+
+.opening::before { top: -22%; left: -27%; }
+.opening::after { right: -30%; bottom: -25%; }
+
+.opening__wash {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  background:
+    radial-gradient(circle at 12% 15%, rgb(255 255 255 / 72%), transparent 25%),
+    radial-gradient(circle at 84% 77%, rgb(216 195 159 / 18%), transparent 30%);
+}
+
+.travel-map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1.1s ease;
+}
+
+.is-intro .travel-map {
+  animation: map-arrival 1.2s 0.15s ease forwards;
+}
+
+.is-flight .travel-map { opacity: 1; }
+
+.map-context {
+  fill: rgb(216 195 159 / 5%);
+  stroke: rgb(116 109 100 / 13%);
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.map-focus {
+  fill: rgb(216 195 159 / 22%);
+  stroke: rgb(184 149 95 / 68%);
+  stroke-linejoin: round;
+  stroke-width: 2.7;
+}
+
+.map-focus--philippines { fill: rgb(184 149 95 / 25%); }
+.map-focus .map-island { fill: rgb(216 195 159 / 18%); }
+
+.route {
+  fill: none;
+  stroke: rgb(168 123 66 / 62%);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 0.012 0.022;
+  stroke-dashoffset: 1;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.is-flight .route {
+  animation: draw-route var(--flight-duration) 0.1s ease-in-out forwards;
+  opacity: 1;
+}
+
+.map-markers {
+  fill: var(--ivory-light);
+  stroke: var(--champagne);
+}
+
+.map-markers .marker-halo {
+  fill: rgb(255 250 241 / 72%);
+  stroke-width: 1.5;
+}
+
+.map-markers .marker-dot {
+  fill: var(--champagne);
+  stroke: var(--ivory-light);
+  stroke-width: 2;
+}
+
+.map-markers .meeting-marker {
+  fill: var(--champagne);
+  stroke-width: 2;
+  opacity: 0;
+}
+
+.is-meeting .meeting-marker,
+.is-wedding .meeting-marker { opacity: 0.65; }
+
+.place-label {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+
+.place-label text {
+  paint-order: stroke;
+  stroke: var(--ivory);
+  stroke-linejoin: round;
+  stroke-width: 5px;
+}
+
+.place-label__country {
+  fill: var(--champagne);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 4px;
+}
+
+.place-label__city {
+  fill: var(--muted);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  letter-spacing: 3px;
+}
+
+.place-label__traveller {
+  fill: var(--charcoal);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 24px;
+  letter-spacing: 2px;
+}
+
+.is-intro .place-label { opacity: 0.72; }
+.is-flight .place-label { opacity: 0.92; }
+
+.flight {
+  position: absolute;
+  z-index: 4;
+  top: 53.5%;
+  left: 51%;
+  width: clamp(8rem, 32vw, 18rem);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.flight img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0.35rem 0.35rem rgb(69 54 37 / 10%));
+}
+
+.flight--kyo {
+  transform: translate(-50%, -50%) translate(clamp(7rem, 15vw, 11rem), clamp(10rem, 27vh, 17rem)) rotate(-7deg);
+}
+
+.flight--aura {
+  transform: translate(-50%, -50%) translate(clamp(4.7rem, 11vw, 9.6rem), clamp(-17rem, -27vh, -9.5rem)) rotate(7deg);
+}
+
+.is-flight .flight--kyo {
+  animation: fly-kyo var(--flight-duration) cubic-bezier(0.42, 0, 0.22, 1) forwards;
+}
+
+.is-flight .flight--aura {
+  animation: fly-aura var(--flight-duration) cubic-bezier(0.42, 0, 0.22, 1) forwards;
+}
+
+.flight__float { animation: float 1.45s ease-in-out infinite alternate; }
+
+.is-meeting .flight,
+.is-wedding .flight {
+  opacity: 0;
+  transition: opacity 0.55s ease;
+}
+
+.meeting-scene,
+.wedding-scene {
+  position: absolute;
+  z-index: 5;
+  top: 47%;
+  left: 50%;
+  width: min(90vw, 31rem);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -45%) scale(0.94);
+  transition: opacity 0.7s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.meeting-scene img,
+.wedding-scene img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0.6rem 0.5rem rgb(69 54 37 / 8%));
+}
+
+.is-meeting .meeting-scene {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.is-wedding .meeting-scene {
+  opacity: 0;
+  transform: translate(-50%, -54%) scale(0.98);
+}
+
+.wedding-scene {
+  top: 35%;
+  width: min(68vw, 22rem);
+  transform: translate(-50%, -39%) scale(0.97);
+}
+
+.is-wedding .wedding-scene {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.heart {
+  position: absolute;
+  top: 25%;
+  left: 51%;
+  width: clamp(0.72rem, 3.5vw, 1.15rem);
+  aspect-ratio: 1;
+  background: var(--rose);
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(45deg) scale(0);
+}
+
+.heart::before,
+.heart::after {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: inherit;
+  content: "";
+}
+
+.heart::before { left: -50%; }
+.heart::after { top: -50%; }
+
+.is-meeting .heart {
+  animation: heart-pop 1.2s 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.cross {
+  position: absolute;
+  top: -0.9rem;
+  left: 50%;
+  width: 1px;
+  height: clamp(1.4rem, 5vw, 2rem);
+  background: var(--champagne);
+  opacity: 0.85;
+  transform: translateX(-50%);
+}
+
+.cross span {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  width: clamp(0.75rem, 3vw, 1.1rem);
+  height: 1px;
+  background: inherit;
+  transform: translateX(-50%);
+}
+
+.opening__copy {
+  position: absolute;
+  z-index: 6;
+  right: 1.2rem;
+  bottom: clamp(5.8rem, 11vh, 7.5rem);
+  left: 1.2rem;
+  text-align: center;
+}
+
+.opening__copy > * {
+  margin: 0;
+  opacity: 0;
+  transform: translateY(0.7rem);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.is-wedding .opening__copy > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.is-wedding .opening__copy .eyebrow { transition-delay: 0.15s; }
+.is-wedding .opening__copy h1 { transition-delay: 0.25s; }
+.is-wedding .opening__copy .tagline { transition-delay: 0.4s; }
+.is-wedding .opening__copy .date { transition-delay: 0.55s; }
+
+.eyebrow {
+  color: var(--champagne);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(0.57rem, 2vw, 0.68rem);
+  letter-spacing: 0.23em;
+  text-transform: uppercase;
+}
+
+.opening h1 {
+  margin-top: 0.35rem;
+  font-size: clamp(1.7rem, 8.5vw, 4.25rem);
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.opening h1 span {
+  color: var(--champagne);
+  font-size: 0.68em;
+  font-style: italic;
+}
+
+.tagline {
+  margin-top: 0.55rem !important;
+  color: var(--muted);
+  font-size: clamp(0.8rem, 3.3vw, 1rem);
+  letter-spacing: 0.04em;
+}
+
+.date {
+  margin-top: 0.7rem !important;
+  color: var(--charcoal);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(0.68rem, 2.6vw, 0.8rem);
+  letter-spacing: 0.32em;
+}
+
+.date i {
+  display: inline-block;
+  width: 2px;
+  height: 2px;
+  margin: 0 0.42rem;
+  border-radius: 50%;
+  background: var(--champagne);
+  vertical-align: middle;
+}
+
+.open-button {
+  position: absolute;
+  z-index: 7;
+  right: 50%;
+  bottom: clamp(1.4rem, 3.5vh, 2.3rem);
+  display: flex;
+  min-width: 12.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 0.85rem 1.35rem;
+  border: 1px solid var(--champagne);
+  border-radius: 999px;
+  background: rgb(255 250 241 / 86%);
+  color: var(--charcoal);
+  cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  opacity: 0;
+  pointer-events: none;
+  text-transform: uppercase;
+  transform: translate(50%, 0.7rem);
+  transition: opacity 0.65s ease, transform 0.65s ease, background-color 0.25s ease;
+}
+
+.is-invitation-ready .open-button {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(50%, 0);
+}
+
+.open-button:hover { background: var(--ivory-light); }
+
+.open-button:focus-visible {
+  outline: 2px solid var(--charcoal);
+  outline-offset: 4px;
+}
+
+.open-button__arrow {
+  color: var(--champagne);
+  font-size: 1rem;
+  line-height: 0;
+}
+
+.placeholder {
+  display: grid;
+  min-height: 70vh;
+  place-content: center;
+  padding: 4rem 1.5rem;
+  background: var(--ivory-light);
+  text-align: center;
+}
+
+.placeholder:focus { outline: none; }
+
+.placeholder__ornament {
+  margin: 0 0 1rem;
+  color: var(--champagne);
+  font-size: 1rem;
+}
+
+.placeholder h2 {
+  max-width: 28rem;
+  margin: 0;
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+@keyframes draw-route {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes map-arrival {
+  to { opacity: 1; }
+}
+
+@keyframes fly-kyo {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(clamp(7rem, 15vw, 11rem), clamp(10rem, 27vh, 17rem)) rotate(-7deg);
+  }
+  12% { opacity: 1; }
+  55% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(clamp(2.8rem, 13vw, 8rem), clamp(3rem, 10vh, 6.5rem)) rotate(-3deg);
+  }
+  88% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(0, 0) rotate(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(0, 0) rotate(0);
+  }
+}
+
+@keyframes fly-aura {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(clamp(4.7rem, 11vw, 9.6rem), clamp(-17rem, -27vh, -9.5rem)) rotate(7deg);
+  }
+  12% { opacity: 1; }
+  58% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(clamp(1.8rem, 8vw, 5rem), clamp(-6.3rem, -10vh, -3.5rem)) rotate(3deg);
+  }
+  88% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(0, 0) rotate(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(0, 0) rotate(0);
+  }
+}
+
+@keyframes float {
+  from { transform: translateY(-0.18rem) rotate(-0.5deg); }
+  to { transform: translateY(0.28rem) rotate(0.7deg); }
+}
+
+@keyframes heart-pop {
+  0% { opacity: 0; transform: translate(-50%, -50%) rotate(45deg) scale(0); }
+  35% { opacity: 1; transform: translate(-50%, -50%) rotate(45deg) scale(1.18); }
+  55% { opacity: 1; transform: translate(-50%, -50%) rotate(45deg) scale(0.94); }
+  75%, 100% { opacity: 1; transform: translate(-50%, -50%) rotate(45deg) scale(1); }
+}
+
+@media (min-width: 48rem) {
+  .travel-map {
+    width: min(80vw, 70rem);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .meeting-scene { top: 47%; }
+  .wedding-scene { top: 35%; width: min(28vw, 22rem); }
+}
+
+@media (max-height: 43rem) {
+  .wedding-scene {
+    top: 31%;
+    width: min(54vw, 15rem);
+  }
+
+  .opening__copy { bottom: 4.75rem; }
+  .opening h1 { font-size: clamp(1.75rem, 8vw, 3rem); }
+
+  .tagline,
+  .date { margin-top: 0.35rem !important; }
+
+  .open-button {
+    bottom: 0.75rem;
+    padding-block: 0.7rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .opening.is-reduced .travel-map,
+  .opening.is-reduced .place-label,
+  .opening.is-reduced .flight,
+  .opening.is-reduced .meeting-scene {
+    display: none;
+  }
+}
