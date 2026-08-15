@@ -618,7 +618,7 @@ button, input, textarea, select { font: inherit; }
   overflow-x: hidden;
   overflow-x: clip;
   padding-block: clamp(3rem, 6.5svh, 5.25rem) clamp(3.5rem, 8svh, 5.5rem);
-  padding-bottom: calc(clamp(3.5rem, 8svh, 5.5rem) + max(1.25rem, env(safe-area-inset-bottom)));
+  padding-bottom: calc(clamp(3.5rem, 8svh, 5.5rem) + env(safe-area-inset-bottom));
   padding-right: max(1.35rem, env(safe-area-inset-right));
   padding-left: max(1.35rem, env(safe-area-inset-left));
   background: var(--ivory-light);
@@ -830,6 +830,7 @@ button, input, textarea, select { font: inherit; }
 }
 
 .scroll-cue {
+  --scroll-cue-travel: 0.2rem;
   display: flex;
   width: fit-content;
   min-width: 4.5rem;
@@ -1728,7 +1729,7 @@ body.has-open-lightbox { overflow: hidden; }
 
   50% {
     opacity: 1;
-    transform: translateY(0.2rem) rotate(45deg);
+    transform: translateY(var(--scroll-cue-travel)) rotate(45deg);
   }
 }
 
@@ -1799,6 +1800,17 @@ body.has-open-lightbox { overflow: hidden; }
     grid-template-columns: minmax(8rem, 0.72fr) minmax(0, 1.28fr);
     align-items: baseline;
     gap: 1.5rem;
+  }
+}
+
+@media (max-width: 30rem) {
+  .scroll-cue--invitation {
+    --scroll-cue-travel: 2px;
+    min-height: 3.5rem;
+    justify-content: flex-start;
+    gap: 0.35rem;
+    margin-top: 0;
+    padding: 0.125rem 0 0.75rem;
   }
 }
 
