@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="is-awaiting-begin">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -14,10 +14,37 @@
   <body>
     <main>
       <section
-        class="opening is-intro"
+        class="opening is-awaiting"
         id="opening"
         aria-labelledby="couple-title"
       >
+        <div
+          class="welcome-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="welcome-title"
+          aria-describedby="welcome-invitation"
+        >
+          <div class="welcome-overlay__content">
+            <span class="welcome-overlay__cross" aria-hidden="true"></span>
+            <p class="welcome-overlay__names" id="welcome-title">
+              KYO SON <span>&amp;</span> AURA
+            </p>
+            <p class="welcome-overlay__invitation" id="welcome-invitation">
+              You are invited
+            </p>
+            <button
+              class="begin-button"
+              type="button"
+              aria-label="Begin the wedding invitation with music"
+            >
+              Tap to Begin
+            </button>
+            <p class="welcome-overlay__music" aria-hidden="true">
+              <span>&#9835;</span> Begin with music
+            </p>
+          </div>
+        </div>
         <div class="opening__wash" aria-hidden="true"></div>
         <svg
           class="travel-map"

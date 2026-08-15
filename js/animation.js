@@ -29,16 +29,20 @@
     console.info("[Wedding Animation] Initialising");
 
     const opening = document.querySelector("#opening");
+    const welcomeOverlay = document.querySelector(".welcome-overlay");
+    const beginButton = document.querySelector(".begin-button");
     const openButton = document.querySelector(".open-button");
     const invitationContent = document.querySelector("#invitation-content");
 
-    if (!opening || !openButton || !invitationContent) {
+    if (!opening || !welcomeOverlay || !beginButton || !openButton || !invitationContent) {
       console.error("[Wedding Animation] Required opening elements not found");
       return;
     }
 
     const reducedMotionEnabled = userPrefersReducedMotion();
     const timers = [];
+    let hasBegun = false;
+    let welcomeDismissTimer;
 
     console.info(`[Wedding Animation] Reduced motion: ${reducedMotionEnabled}`);
 
@@ -52,16 +56,28 @@
       timers.push(window.setTimeout(callback, delay));
     };
 
-    opening.classList.remove("is-reduced", "is-invitation-ready");
+    opening.classList.remove(...SCENE_CLASSES, "is-reduced", "is-invitation-ready");
+    opening.classList.add("is-awaiting");
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
 
-    if (reducedMotionEnabled) {
-      opening.classList.add("is-reduced");
-      schedule(() => {
-        showScene("wedding", "is-wedding");
-        opening.classList.add("is-invitation-ready");
-        console.info("[Wedding Animation] Scene: invitation-ready");
-      }, SCENE_TIMING.REDUCED_MOTION_REVEAL);
-    } else {
+    const startOpeningAnimation = () => {
+      if (!hasBegun) return;
+
+      console.info("[Wedding Animation] Starting timeline");
+      timers.forEach((timer) => window.clearTimeout(timer));
+      timers.length = 0;
+      opening.classList.remove(...SCENE_CLASSES, "is-awaiting", "is-reduced", "is-invitation-ready");
+
+      if (reducedMotionEnabled) {
+        opening.classList.add("is-reduced");
+        schedule(() => {
+          showScene("wedding", "is-wedding");
+          opening.classList.add("is-invitation-ready");
+          console.info("[Wedding Animation] Scene: invitation-ready");
+        }, SCENE_TIMING.REDUCED_MOTION_REVEAL);
+        return;
+      }
+
       showScene("intro", "is-intro");
       schedule(() => showScene("flights", "is-flight"), SCENE_TIMING.FLIGHTS_START);
       schedule(() => showScene("meeting", "is-meeting"), SCENE_TIMING.MEETING_START);
@@ -70,7 +86,40 @@
         opening.classList.add("is-invitation-ready");
         console.info("[Wedding Animation] Scene: invitation-ready");
       }, SCENE_TIMING.INVITATION_REVEAL);
-    }
+    };
+
+    const dismissWelcomeOverlay = () => {
+      document.documentElement.classList.remove("is-awaiting-begin");
+      welcomeOverlay.classList.add("is-dismissing");
+      welcomeOverlay.setAttribute("aria-hidden", "true");
+      let welcomeDismissed = false;
+
+      const finishDismissal = () => {
+        if (welcomeDismissed) return;
+
+        welcomeDismissed = true;
+        window.clearTimeout(welcomeDismissTimer);
+        welcomeOverlay.hidden = true;
+        console.info("[Wedding Experience] Welcome dismissed");
+      };
+
+      welcomeOverlay.addEventListener("transitionend", finishDismissal, { once: true });
+      welcomeDismissTimer = window.setTimeout(finishDismissal, 650);
+    };
+
+    beginButton.addEventListener("click", () => {
+      if (hasBegun) return;
+
+      hasBegun = true;
+      beginButton.disabled = true;
+      console.info("[Wedding Experience] Begin activated");
+
+      window.WeddingMusic?.playFromUserGesture();
+      startOpeningAnimation();
+      dismissWelcomeOverlay();
+    });
+
+    beginButton.focus({ preventScroll: true });
 
     openButton.addEventListener("click", () => {
       invitationContent.scrollIntoView({
@@ -82,6 +131,7 @@
 
     window.addEventListener("pagehide", () => {
       timers.forEach((timer) => window.clearTimeout(timer));
+      window.clearTimeout(welcomeDismissTimer);
     }, { once: true });
   };
 

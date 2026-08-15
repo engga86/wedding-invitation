@@ -14,6 +14,13 @@
 
 html { scroll-behavior: smooth; }
 
+html.is-awaiting-begin,
+html.is-awaiting-begin body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 body {
   margin: 0;
   background: var(--ivory);
@@ -30,6 +37,139 @@ button, input, textarea, select { font: inherit; }
   min-height: 100svh;
   overflow: hidden;
   background: var(--ivory);
+}
+
+.welcome-overlay {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  min-height: 100vh;
+  min-height: 100svh;
+  place-items: center;
+  padding: max(1.5rem, env(safe-area-inset-top)) max(1.25rem, env(safe-area-inset-right)) max(1.5rem, env(safe-area-inset-bottom)) max(1.25rem, env(safe-area-inset-left));
+  background:
+    radial-gradient(circle at 50% 42%, rgb(255 250 241 / 92%), transparent 28rem),
+    var(--ivory);
+  text-align: center;
+  transition: opacity 550ms ease, transform 550ms ease;
+}
+
+.welcome-overlay::before,
+.welcome-overlay::after {
+  position: absolute;
+  width: clamp(11rem, 46vw, 28rem);
+  aspect-ratio: 1;
+  border: 1px solid rgb(184 149 95 / 13%);
+  border-radius: 50%;
+  content: "";
+}
+
+.welcome-overlay::before { top: -23%; left: -24%; }
+.welcome-overlay::after { right: -25%; bottom: -24%; }
+
+.welcome-overlay.is-dismissing {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-0.25rem);
+}
+
+.welcome-overlay[hidden] { display: none; }
+
+.welcome-overlay__content {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 32rem);
+}
+
+.welcome-overlay__cross {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 1.85rem;
+  margin: 0 auto 1.6rem;
+  background: var(--champagne);
+}
+
+.welcome-overlay__cross::after {
+  position: absolute;
+  top: 0.52rem;
+  left: 50%;
+  width: 0.9rem;
+  height: 1px;
+  background: inherit;
+  content: "";
+  transform: translateX(-50%);
+}
+
+.welcome-overlay__names,
+.welcome-overlay__invitation,
+.welcome-overlay__music { margin: 0; }
+
+.welcome-overlay__names {
+  font-size: clamp(1.8rem, 8vw, 3.4rem);
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.welcome-overlay__names span {
+  color: var(--champagne);
+  font-size: 0.68em;
+  font-style: italic;
+}
+
+.welcome-overlay__invitation {
+  margin-top: 0.8rem;
+  color: var(--muted);
+  font-size: clamp(0.92rem, 3.8vw, 1.08rem);
+  letter-spacing: 0.08em;
+}
+
+.begin-button {
+  min-width: min(100%, 13.5rem);
+  margin-top: 2.4rem;
+  padding: 0.9rem 1.5rem;
+  border: 1px solid var(--champagne);
+  border-radius: 999px;
+  background: rgb(255 250 241 / 82%);
+  color: var(--charcoal);
+  cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  touch-action: manipulation;
+  transition: background-color 0.25s ease;
+}
+
+.begin-button:hover { background: var(--ivory-light); }
+
+.begin-button:focus-visible {
+  outline: 2px solid var(--charcoal);
+  outline-offset: 4px;
+}
+
+.begin-button:disabled { cursor: default; }
+
+.welcome-overlay__music {
+  margin-top: 0.9rem;
+  color: var(--muted);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.welcome-overlay__music span {
+  margin-right: 0.3rem;
+  color: var(--champagne);
+}
+
+.is-awaiting-begin .music-control {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .opening::before,
@@ -200,7 +340,7 @@ button, input, textarea, select { font: inherit; }
   animation: fly-aura var(--flight-duration) cubic-bezier(0.42, 0, 0.22, 1) forwards;
 }
 
-.flight__float { animation: float 1.45s ease-in-out infinite alternate; }
+.is-flight .flight__float { animation: float 1.45s ease-in-out infinite alternate; }
 
 .is-meeting .flight,
 .is-wedding .flight {
@@ -1667,4 +1807,6 @@ body.has-open-lightbox { overflow: hidden; }
   .opening.is-reduced .meeting-scene {
     display: none;
   }
+
+  .welcome-overlay { transform: none; }
 }

@@ -2,7 +2,6 @@
   "use strict";
 
   const MUSIC_VOLUME = 0.3;
-  const VALID_KEYS = ["Enter", " ", "Spacebar"];
 
   const initialiseMusic = () => {
     const audio = document.querySelector("#wedding-music");
@@ -11,11 +10,8 @@
 
     if (!audio || !control || !label) return;
 
-    const activationEvents = typeof window.PointerEvent === "function"
-      ? ["pointerup", "keydown"]
-      : ["touchend", "click", "keydown"];
     let audioUnavailable = false;
-    let gesturePlayPending = false;
+    let playPending = false;
 
     audio.volume = MUSIC_VOLUME;
 
@@ -30,69 +26,46 @@
       label.textContent = isPlaying ? "Music on" : "Music off";
     };
 
-    const removeActivationListeners = () => {
-      activationEvents.forEach((eventName) => {
-        document.removeEventListener(eventName, handleUserGesture, true);
-      });
-    };
-
-    const handlePlayPromise = (playPromise, source) => {
+    const handlePlayPromise = (playPromise) => {
       if (!playPromise || typeof playPromise.then !== "function") {
-        if (source === "gesture") gesturePlayPending = false;
+        playPending = false;
         return;
       }
 
       playPromise.then(() => {
-        if (source === "gesture") gesturePlayPending = false;
-        removeActivationListeners();
+        playPending = false;
         updateControl();
       }).catch((error) => {
-        if (source === "gesture") gesturePlayPending = false;
+        playPending = false;
         updateControl();
 
         const policyBlockedPlayback = (
           error?.name === "NotAllowedError" || error?.name === "SecurityError"
         );
 
-        if (source === "initial" && policyBlockedPlayback && audio.paused) {
-          console.info("[Wedding Music] Autoplay blocked");
-        } else if (!policyBlockedPlayback) {
+        if (!policyBlockedPlayback) {
           console.warn("[Wedding Music] Playback could not start.");
         }
       });
     };
 
-    function handleUserGesture(event) {
-      const isValidKeyboardGesture = event.type !== "keydown"
-        || VALID_KEYS.includes(event.key);
-      const cameFromMusicControl = event.target.closest?.(".music-control");
-
-      if (
-        !isValidKeyboardGesture
-        || cameFromMusicControl
-        || audioUnavailable
-        || !audio.paused
-        || gesturePlayPending
-      ) {
-        return;
-      }
+    const playFromUserGesture = () => {
+      if (audioUnavailable || playPending || (!audio.paused && !audio.ended)) return;
 
       console.info("[Wedding Music] User gesture activation");
-      gesturePlayPending = true;
+      playPending = true;
 
       try {
         const playPromise = audio.play();
-        handlePlayPromise(playPromise, "gesture");
+        handlePlayPromise(playPromise);
       } catch (error) {
-        gesturePlayPending = false;
+        playPending = false;
         updateControl();
         console.warn("[Wedding Music] Playback could not start.");
       }
-    }
+    };
 
-    activationEvents.forEach((eventName) => {
-      document.addEventListener(eventName, handleUserGesture, true);
-    });
+    window.WeddingMusic = Object.freeze({ playFromUserGesture });
 
     control.addEventListener("click", () => {
       if (audioUnavailable) return;
@@ -102,21 +75,11 @@
         return;
       }
 
-      console.info("[Wedding Music] User gesture activation");
-
-      try {
-        const playPromise = audio.play();
-        handlePlayPromise(playPromise, "gesture");
-      } catch (error) {
-        gesturePlayPending = false;
-        updateControl();
-        console.warn("[Wedding Music] Playback could not start.");
-      }
+      playFromUserGesture();
     });
 
     audio.addEventListener("play", () => {
-      gesturePlayPending = false;
-      removeActivationListeners();
+      playPending = false;
       updateControl();
       console.info("[Wedding Music] Playback started");
     });
@@ -128,22 +91,13 @@
 
     audio.addEventListener("error", () => {
       audioUnavailable = true;
-      gesturePlayPending = false;
-      removeActivationListeners();
+      playPending = false;
       control.hidden = true;
       console.error("[Wedding Music] Audio load error");
     }, { once: true });
 
     updateControl();
-    console.info("[Wedding Music] Initial autoplay attempt");
-
-    try {
-      const initialPlayPromise = audio.play();
-      handlePlayPromise(initialPlayPromise, "initial");
-    } catch (error) {
-      updateControl();
-      console.info("[Wedding Music] Autoplay blocked");
-    }
+    console.info("[Wedding Experience] Awaiting guest");
   };
 
   initialiseMusic();
