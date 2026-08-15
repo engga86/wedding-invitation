@@ -1,8 +1,8 @@
 (() => {
   "use strict";
 
-  const SLIDE_INTERVAL = 5000;
-  const FADE_DURATION = 850;
+  const SLIDE_INTERVAL = 3000;
+  const FADE_DURATION = 450;
   const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
   const initialiseGallery = () => {
