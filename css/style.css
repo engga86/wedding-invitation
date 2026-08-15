@@ -41,16 +41,18 @@ button, input, textarea, select { font: inherit; }
 
 .welcome-overlay {
   position: fixed;
-  z-index: 100;
+  z-index: 150;
   inset: 0;
   display: grid;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
   min-height: 100vh;
   min-height: 100svh;
+  overflow: hidden;
   place-items: center;
   padding: max(1.5rem, env(safe-area-inset-top)) max(1.25rem, env(safe-area-inset-right)) max(1.5rem, env(safe-area-inset-bottom)) max(1.25rem, env(safe-area-inset-left));
-  background:
-    radial-gradient(circle at 50% 42%, rgb(255 250 241 / 92%), transparent 28rem),
-    var(--ivory);
+  background: var(--ivory);
   text-align: center;
   transition: opacity 550ms ease, transform 550ms ease;
 }
@@ -79,7 +81,14 @@ button, input, textarea, select { font: inherit; }
 .welcome-overlay__content {
   position: relative;
   z-index: 1;
+  display: flex;
   width: min(100%, 32rem);
+  margin-inline: auto;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: clamp(1rem, 4svh, 2.5rem);
+  text-align: center;
 }
 
 .welcome-overlay__cross {
@@ -107,11 +116,14 @@ button, input, textarea, select { font: inherit; }
 .welcome-overlay__music { margin: 0; }
 
 .welcome-overlay__names {
-  font-size: clamp(1.8rem, 8vw, 3.4rem);
+  width: 100%;
+  font-size: clamp(1.5rem, 7vw, 3.4rem);
   font-weight: 400;
-  letter-spacing: 0.12em;
+  letter-spacing: clamp(0.06em, 0.8vw, 0.12em);
   line-height: 1.1;
+  text-align: center;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .welcome-overlay__names span {
@@ -121,30 +133,63 @@ button, input, textarea, select { font: inherit; }
 }
 
 .welcome-overlay__invitation {
-  margin-top: 0.8rem;
+  margin-top: 0.9rem;
   color: var(--muted);
   font-size: clamp(0.92rem, 3.8vw, 1.08rem);
+  font-style: italic;
   letter-spacing: 0.08em;
+  text-align: center;
+}
+
+.welcome-overlay__divider {
+  position: relative;
+  display: block;
+  width: 2.8rem;
+  height: 1px;
+  margin-top: 1.5rem;
+  background: rgb(184 149 95 / 48%);
+}
+
+.welcome-overlay__divider::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.34rem;
+  aspect-ratio: 1;
+  border: 1px solid var(--champagne);
+  background: var(--ivory);
+  content: "";
+  transform: translate(-50%, -50%) rotate(45deg);
 }
 
 .begin-button {
-  min-width: min(100%, 13.5rem);
-  margin-top: 2.4rem;
-  padding: 0.9rem 1.5rem;
+  appearance: none;
+  display: inline-flex;
+  width: clamp(11rem, 60vw, 13.5rem);
+  min-height: 3rem;
+  margin: 1.65rem auto 0;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.25rem;
   border: 1px solid var(--champagne);
   border-radius: 999px;
-  background: rgb(255 250 241 / 82%);
+  background-color: var(--ivory-light);
+  box-shadow: none;
   color: var(--charcoal);
   cursor: pointer;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 0.7rem;
+  font-weight: 400;
   letter-spacing: 0.22em;
+  line-height: 1;
+  text-align: center;
   text-transform: uppercase;
   touch-action: manipulation;
-  transition: background-color 0.25s ease;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
-.begin-button:hover { background: var(--ivory-light); }
+.begin-button:hover { background-color: #fffdf8; }
+.begin-button:active { background-color: #f1e6d4; }
 
 .begin-button:focus-visible {
   outline: 2px solid var(--charcoal);
@@ -154,7 +199,10 @@ button, input, textarea, select { font: inherit; }
 .begin-button:disabled { cursor: default; }
 
 .welcome-overlay__music {
-  margin-top: 0.9rem;
+  display: flex;
+  margin-top: 0.95rem;
+  align-items: center;
+  justify-content: center;
   color: var(--muted);
   font-family: Arial, Helvetica, sans-serif;
   font-size: 0.65rem;
@@ -170,6 +218,12 @@ button, input, textarea, select { font: inherit; }
 .is-awaiting-begin .music-control {
   visibility: hidden;
   pointer-events: none;
+}
+
+.opening-experience { display: contents; }
+
+.opening.is-awaiting .opening-experience > * {
+  visibility: hidden;
 }
 
 .opening::before,
@@ -1046,7 +1100,7 @@ button, input, textarea, select { font: inherit; }
 
 .lightbox {
   position: fixed;
-  z-index: 100;
+  z-index: 200;
   inset: 0;
   display: grid;
   grid-template-columns: 3.25rem minmax(0, 1fr) 3.25rem;

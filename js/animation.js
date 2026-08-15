@@ -31,10 +31,11 @@
     const opening = document.querySelector("#opening");
     const welcomeOverlay = document.querySelector(".welcome-overlay");
     const beginButton = document.querySelector(".begin-button");
+    const openingExperience = document.querySelector(".opening-experience");
     const openButton = document.querySelector(".open-button");
     const invitationContent = document.querySelector("#invitation-content");
 
-    if (!opening || !welcomeOverlay || !beginButton || !openButton || !invitationContent) {
+    if (!opening || !welcomeOverlay || !beginButton || !openingExperience || !openButton || !invitationContent) {
       console.error("[Wedding Animation] Required opening elements not found");
       return;
     }
@@ -66,6 +67,8 @@
       console.info("[Wedding Animation] Starting timeline");
       timers.forEach((timer) => window.clearTimeout(timer));
       timers.length = 0;
+      openingExperience.removeAttribute("inert");
+      openingExperience.removeAttribute("aria-hidden");
       opening.classList.remove(...SCENE_CLASSES, "is-awaiting", "is-reduced", "is-invitation-ready");
 
       if (reducedMotionEnabled) {
@@ -89,7 +92,6 @@
     };
 
     const dismissWelcomeOverlay = () => {
-      document.documentElement.classList.remove("is-awaiting-begin");
       welcomeOverlay.classList.add("is-dismissing");
       welcomeOverlay.setAttribute("aria-hidden", "true");
       let welcomeDismissed = false;
@@ -100,6 +102,7 @@
         welcomeDismissed = true;
         window.clearTimeout(welcomeDismissTimer);
         welcomeOverlay.hidden = true;
+        document.documentElement.classList.remove("is-awaiting-begin");
         console.info("[Wedding Experience] Welcome dismissed");
       };
 
