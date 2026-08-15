@@ -618,6 +618,7 @@ button, input, textarea, select { font: inherit; }
   overflow-x: hidden;
   overflow-x: clip;
   padding-block: clamp(3rem, 6.5svh, 5.25rem) clamp(3.5rem, 8svh, 5.5rem);
+  padding-bottom: calc(clamp(3.5rem, 8svh, 5.5rem) + max(1.25rem, env(safe-area-inset-bottom)));
   padding-right: max(1.35rem, env(safe-area-inset-right));
   padding-left: max(1.35rem, env(safe-area-inset-left));
   background: var(--ivory-light);
@@ -847,6 +848,7 @@ button, input, textarea, select { font: inherit; }
 
 .scroll-cue--invitation {
   margin-top: clamp(0.35rem, 1.3svh, 0.8rem);
+  padding-bottom: 0.3rem;
 }
 
 .scroll-cue__label {
@@ -1726,7 +1728,7 @@ body.has-open-lightbox { overflow: hidden; }
 
   50% {
     opacity: 1;
-    transform: translateY(0.3rem) rotate(45deg);
+    transform: translateY(0.2rem) rotate(45deg);
   }
 }
 
