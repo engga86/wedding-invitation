@@ -117,6 +117,7 @@
       let transitionTimer = null;
       let transitionRequest = 0;
       let transitionInProgress = false;
+      let resizeFrame = null;
       let ready = false;
       let visible = typeof window.IntersectionObserver !== "function";
 
@@ -142,11 +143,60 @@
         });
       };
 
-      const setStageHeight = (item) => {
-        if (!item || !stage) return;
+      const getStageSize = (item) => {
+        const image = item?.querySelector("img");
+        if (!image?.naturalWidth || !image.naturalHeight || !stage) return null;
 
-        const height = Math.ceil(item.getBoundingClientRect().height);
-        if (height > 0) stage.style.height = `${height}px`;
+        const stageStyles = window.getComputedStyle(stage);
+        const rootFontSize = Number.parseFloat(
+          window.getComputedStyle(document.documentElement).fontSize
+        ) || 16;
+        const framePadding = Number.parseFloat(
+          stageStyles.getPropertyValue("--gallery-frame-padding")
+        ) || 0;
+        const horizontalFrame = (
+          (framePadding * 2)
+          + (Number.parseFloat(stageStyles.borderLeftWidth) || 0)
+          + (Number.parseFloat(stageStyles.borderRightWidth) || 0)
+        );
+        const verticalFrame = (
+          (framePadding * 2)
+          + (Number.parseFloat(stageStyles.borderTopWidth) || 0)
+          + (Number.parseFloat(stageStyles.borderBottomWidth) || 0)
+        );
+        const mobile = window.matchMedia("(max-width: 47.999rem)").matches;
+        const viewportHeight = (
+          document.documentElement.clientHeight || window.innerHeight
+        );
+        const heightCap = (mobile ? 36 : 42) * rootFontSize;
+        const maxImageWidth = Math.max(1, gallery.clientWidth - horizontalFrame);
+        const maxImageHeight = Math.max(
+          1,
+          Math.min(viewportHeight * 0.65, heightCap)
+        );
+        const scale = Math.min(
+          maxImageWidth / image.naturalWidth,
+          maxImageHeight / image.naturalHeight
+        );
+
+        return {
+          width: (image.naturalWidth * scale) + horizontalFrame,
+          height: (image.naturalHeight * scale) + verticalFrame
+        };
+      };
+
+      const setStageSize = (item, immediate = false) => {
+        const size = getStageSize(item);
+        if (!size) return;
+
+        stage.classList.toggle("is-sizing-immediate", immediate);
+        stage.style.width = `${size.width}px`;
+        stage.style.height = `${size.height}px`;
+
+        if (immediate) {
+          void stage.offsetWidth;
+          stage.classList.remove("is-sizing-immediate");
+        }
       };
 
       const settleTransition = () => {
@@ -161,7 +211,7 @@
         });
 
         updateSelection();
-        setStageHeight(loadedItems[currentIndex]);
+        setStageSize(loadedItems[currentIndex], true);
       };
 
       const canAdvance = () => (
@@ -219,7 +269,7 @@
             item.classList.remove("is-entering", "is-exiting");
           });
           updateSelection();
-          setStageHeight(incoming);
+          setStageSize(incoming, true);
           if (restartTimer) startTimer();
           return;
         }
@@ -241,7 +291,7 @@
           incoming.classList.add("is-active");
           outgoing.classList.remove("is-active");
           outgoing.classList.add("is-exiting");
-          setStageHeight(incoming);
+          setStageSize(incoming);
 
           transitionTimer = window.setTimeout(
             settleTransition,
@@ -371,7 +421,10 @@
       });
 
       window.addEventListener("resize", () => {
-        setStageHeight(loadedItems[currentIndex]);
+        window.cancelAnimationFrame(resizeFrame);
+        resizeFrame = window.requestAnimationFrame(() => {
+          setStageSize(loadedItems[currentIndex], true);
+        });
       }, { passive: true });
 
       return instance;

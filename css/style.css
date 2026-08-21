@@ -990,36 +990,49 @@ body.has-open-lightbox .side-scroll-indicator {
 }
 
 .photo-slideshow {
+  display: flex;
   width: min(100%, 42rem);
   max-width: 100%;
+  align-items: center;
+  flex-direction: column;
   margin-inline: auto;
 }
 
 .slideshow-stage {
+  --gallery-frame-padding: 0.5rem;
+
   position: relative;
-  display: grid;
   width: 100%;
-  align-items: start;
+  max-width: 100%;
+  max-height: calc(min(65svh, 42rem) + var(--gallery-frame-padding) + var(--gallery-frame-padding) + 2px);
+  aspect-ratio: 4 / 5;
   overflow: hidden;
+  border: 1px solid rgb(184 149 95 / 24%);
   border-radius: 0.25rem;
-  background: var(--ivory);
-  transition: height var(--slide-transition, 450ms) ease-in-out;
+  background: var(--ivory-light);
+  box-shadow: 0 0.6rem 1.8rem rgb(78 61 39 / 7%);
+  transition:
+    width var(--slide-transition, 450ms) ease-in-out,
+    height var(--slide-transition, 450ms) ease-in-out;
 }
 
+.photo-slideshow.is-ready.has-images .slideshow-stage { aspect-ratio: auto; }
+.slideshow-stage.is-sizing-immediate { transition: none; }
+
 .gallery-item {
-  position: relative;
+  position: absolute;
+  inset: var(--gallery-frame-padding);
   display: none;
-  grid-area: 1 / 1;
   min-width: 0;
+  overflow: hidden;
   margin: 0;
+  border-radius: 0.12rem;
+  background: var(--ivory-light);
 }
 
 .slideshow-stage > .gallery-item:first-child { display: block; }
 
 .gallery-item:not(.is-loaded) {
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  border-radius: 0.2rem;
   background: #eee4d3;
 }
 
@@ -1056,12 +1069,9 @@ body.has-open-lightbox .side-scroll-indicator {
 
 .gallery-item img {
   display: block;
-  width: auto;
+  width: 100%;
   max-width: 100%;
-  max-height: min(60svh, 32rem);
-  height: auto;
-  margin-inline: auto;
-  border-radius: 0.12rem;
+  height: 100%;
   filter: saturate(0.96) sepia(0.025) brightness(1.01);
   object-fit: contain;
 }
@@ -1069,30 +1079,19 @@ body.has-open-lightbox .side-scroll-indicator {
 .gallery-item img[hidden] { display: none; }
 
 .gallery-item.is-loaded {
-  width: fit-content;
-  max-width: 100%;
-  justify-self: center;
-  overflow: visible;
-  padding: clamp(0.3rem, 1.2vw, 0.65rem);
-  border: 1px solid rgb(184 149 95 / 24%);
-  border-radius: 0.25rem;
-  background: var(--ivory-light);
-  box-shadow: 0 0.6rem 1.8rem rgb(78 61 39 / 7%);
   cursor: zoom-in;
 }
 
 .photo-slideshow.is-ready .gallery-item { display: none; }
 
 .photo-slideshow.is-ready.has-images .gallery-item.is-loaded {
-  position: absolute;
-  top: 0;
-  left: 50%;
   z-index: 0;
-  display: block;
+  display: flex;
+  align-items: center;
   backface-visibility: hidden;
+  justify-content: center;
   opacity: 0;
   pointer-events: none;
-  transform: translateX(-50%);
   visibility: hidden;
   transition: opacity var(--slide-transition, 450ms) ease-in-out;
 }
@@ -1817,14 +1816,10 @@ body.has-open-lightbox { overflow: hidden; }
     max-width: 100%;
   }
 
-  .gallery-item.is-loaded {
-    width: 100%;
-    padding: 0.2rem;
-  }
+  .slideshow-stage {
+    --gallery-frame-padding: 0.25rem;
 
-  .gallery-item.is-loaded img {
-    width: 100%;
-    max-height: min(65svh, 36rem);
+    max-height: calc(min(65svh, 36rem) + var(--gallery-frame-padding) + var(--gallery-frame-padding) + 2px);
   }
 
   .slideshow-controls {
@@ -1877,19 +1872,6 @@ body.has-open-lightbox { overflow: hidden; }
 
   .photo-group--engagement .photo-group__header {
     margin-left: 55%;
-  }
-
-  .gallery-item.is-loaded {
-    width: fit-content;
-    max-width: 100%;
-    justify-self: center;
-  }
-
-  .gallery-item.is-loaded img {
-    width: auto;
-    max-width: 100%;
-    max-height: min(62svh, 42rem);
-    margin-inline: auto;
   }
 
   .wedding-day__schedule {
