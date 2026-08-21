@@ -9,7 +9,7 @@
       content="The wedding invitation of Kyo Son and Aura — 9 January 2027."
     />
     <title>KYO SON &amp; AURA | Wedding Invitation</title>
-    <link rel="stylesheet" href="css/style.css?v=20260821-continue-nav" />
+    <link rel="stylesheet" href="css/style.css?v=20260821-passive-scroll" />
   </head>
   <body>
     <main>
@@ -299,6 +299,10 @@
             <figcaption>Mark 10:9</figcaption>
           </figure>
 
+          <div class="scroll-indicator scroll-indicator--invitation" aria-hidden="true">
+            <span class="scroll-indicator__label">Scroll</span>
+            <span class="scroll-indicator__chevron"></span>
+          </div>
         </div>
       </section>
 
@@ -317,7 +321,11 @@
             <h2 id="our-story-title">OUR STORY</h2>
           </header>
 
-          <section class="photo-group" aria-labelledby="dating-title">
+          <section
+            class="photo-group photo-group--dating"
+            id="dating-days"
+            aria-labelledby="dating-title"
+          >
             <header class="photo-group__header">
               <h3 id="dating-title">DATING DAYS</h3>
               <p>Some of our favourite moments together.</p>
@@ -509,10 +517,16 @@
                 </button>
               </div>
             </div>
+
+            <div class="scroll-indicator" aria-hidden="true">
+              <span class="scroll-indicator__label">Scroll</span>
+              <span class="scroll-indicator__chevron"></span>
+            </div>
           </section>
 
           <section
             class="photo-group photo-group--engagement"
+            id="our-engagement"
             aria-labelledby="engagement-title"
           >
             <header class="photo-group__header">
@@ -642,6 +656,11 @@
                 </button>
               </div>
             </div>
+
+            <div class="scroll-indicator" aria-hidden="true">
+              <span class="scroll-indicator__label">Scroll</span>
+              <span class="scroll-indicator__chevron"></span>
+            </div>
           </section>
 
         </div>
@@ -733,6 +752,10 @@
             </details>
           </div>
 
+          <div class="scroll-indicator" aria-hidden="true">
+            <span class="scroll-indicator__label">Scroll</span>
+            <span class="scroll-indicator__chevron"></span>
+          </div>
         </div>
       </section>
 
@@ -811,6 +834,11 @@
             </ul>
           </section>
 
+          <div class="scroll-indicator" aria-hidden="true">
+            <span class="scroll-indicator__label">Scroll</span>
+            <span class="scroll-indicator__chevron"></span>
+          </div>
+
           <div class="closing" id="closing">
             <span class="closing__ornament" aria-hidden="true"></span>
             <p>With love and gratitude,</p>
@@ -875,19 +903,8 @@
       <span class="music-control__label">Music off</span>
     </button>
 
-    <a
-      class="continue-cue"
-      href="#our-story"
-      aria-label="Continue to Our Story"
-      hidden
-    >
-      <span class="continue-cue__label">Continue</span>
-      <span class="continue-cue__chevron" aria-hidden="true"></span>
-    </a>
-
-    <script src="js/music.js?v=20260821-continue-nav"></script>
-    <script src="js/animation.js?v=20260821-continue-nav" defer></script>
-    <script src="js/gallery.js?v=20260821-continue-nav" defer></script>
-    <script src="js/continue-navigation.js?v=20260821-continue-nav" defer></script>
+    <script src="js/music.js?v=20260821-passive-scroll"></script>
+    <script src="js/animation.js?v=20260821-passive-scroll" defer></script>
+    <script src="js/gallery.js?v=20260821-passive-scroll" defer></script>
   </body>
 </html>
