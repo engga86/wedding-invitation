@@ -9,7 +9,7 @@
       content="The wedding invitation of Kyo Son and Aura — 9 January 2027."
     />
     <title>KYO SON &amp; AURA | Wedding Invitation</title>
-    <link rel="stylesheet" href="css/style.css?v=20260821-passive-scroll" />
+    <link rel="stylesheet" href="css/style.css?v=20260821-side-scroll-fade-fix" />
   </head>
   <body>
     <main>
@@ -299,10 +299,6 @@
             <figcaption>Mark 10:9</figcaption>
           </figure>
 
-          <div class="scroll-indicator scroll-indicator--invitation" aria-hidden="true">
-            <span class="scroll-indicator__label">Scroll</span>
-            <span class="scroll-indicator__chevron"></span>
-          </div>
         </div>
       </section>
 
@@ -518,10 +514,6 @@
               </div>
             </div>
 
-            <div class="scroll-indicator" aria-hidden="true">
-              <span class="scroll-indicator__label">Scroll</span>
-              <span class="scroll-indicator__chevron"></span>
-            </div>
           </section>
 
           <section
@@ -657,10 +649,6 @@
               </div>
             </div>
 
-            <div class="scroll-indicator" aria-hidden="true">
-              <span class="scroll-indicator__label">Scroll</span>
-              <span class="scroll-indicator__chevron"></span>
-            </div>
           </section>
 
         </div>
@@ -752,10 +740,6 @@
             </details>
           </div>
 
-          <div class="scroll-indicator" aria-hidden="true">
-            <span class="scroll-indicator__label">Scroll</span>
-            <span class="scroll-indicator__chevron"></span>
-          </div>
         </div>
       </section>
 
@@ -834,11 +818,6 @@
             </ul>
           </section>
 
-          <div class="scroll-indicator" aria-hidden="true">
-            <span class="scroll-indicator__label">Scroll</span>
-            <span class="scroll-indicator__chevron"></span>
-          </div>
-
           <div class="closing" id="closing">
             <span class="closing__ornament" aria-hidden="true"></span>
             <p>With love and gratitude,</p>
@@ -903,8 +882,14 @@
       <span class="music-control__label">Music off</span>
     </button>
 
-    <script src="js/music.js?v=20260821-passive-scroll"></script>
-    <script src="js/animation.js?v=20260821-passive-scroll" defer></script>
-    <script src="js/gallery.js?v=20260821-passive-scroll" defer></script>
+    <div class="side-scroll-indicator" aria-hidden="true" hidden>
+      <span class="side-scroll-indicator__label">Scroll</span>
+      <span class="side-scroll-indicator__chevron"></span>
+    </div>
+
+    <script src="js/music.js?v=20260821-side-scroll-fade-fix"></script>
+    <script src="js/animation.js?v=20260821-side-scroll-fade-fix" defer></script>
+    <script src="js/gallery.js?v=20260821-side-scroll-fade-fix" defer></script>
+    <script src="js/scroll-indicator.js?v=20260821-side-scroll-fade-fix" defer></script>
   </body>
 </html>

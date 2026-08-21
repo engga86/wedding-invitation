@@ -3,6 +3,7 @@
 
   const SLIDE_INTERVAL = 3000;
   const FADE_DURATION = 450;
+  const IMAGE_READY_TIMEOUT = 20000;
   const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
   const initialiseGallery = () => {
@@ -102,15 +103,20 @@
 
     const createSlideshow = (gallery) => {
       const items = Array.from(gallery.querySelectorAll("[data-gallery-item]"));
+      const stage = gallery.querySelector(".slideshow-stage");
       const controls = gallery.querySelector(".slideshow-controls");
       const previous = gallery.querySelector(".slideshow-arrow--previous");
       const next = gallery.querySelector(".slideshow-arrow--next");
       const dotsContainer = gallery.querySelector(".slideshow-dots");
       const galleryName = gallery.dataset.gallery;
+      const itemReadiness = new WeakMap();
       let loadedItems = [];
       let dots = [];
       let currentIndex = 0;
       let timer = null;
+      let transitionTimer = null;
+      let transitionRequest = 0;
+      let transitionInProgress = false;
       let ready = false;
       let visible = typeof window.IntersectionObserver !== "function";
 
@@ -121,6 +127,41 @@
           window.clearInterval(timer);
           timer = null;
         }
+      };
+
+      const updateSelection = () => {
+        loadedItems.forEach((item, itemIndex) => {
+          const isCurrent = itemIndex === currentIndex;
+          item.setAttribute("aria-hidden", String(!isCurrent));
+          item.setAttribute("tabindex", isCurrent ? "0" : "-1");
+        });
+        dots.forEach((dot, dotIndex) => {
+          const isCurrent = dotIndex === currentIndex;
+          dot.classList.toggle("is-active", isCurrent);
+          dot.setAttribute("aria-pressed", String(isCurrent));
+        });
+      };
+
+      const setStageHeight = (item) => {
+        if (!item || !stage) return;
+
+        const height = Math.ceil(item.getBoundingClientRect().height);
+        if (height > 0) stage.style.height = `${height}px`;
+      };
+
+      const settleTransition = () => {
+        window.clearTimeout(transitionTimer);
+        transitionTimer = null;
+        transitionInProgress = false;
+
+        loadedItems.forEach((item, itemIndex) => {
+          const isCurrent = itemIndex === currentIndex;
+          item.classList.toggle("is-active", isCurrent);
+          item.classList.remove("is-entering", "is-exiting");
+        });
+
+        updateSelection();
+        setStageHeight(loadedItems[currentIndex]);
       };
 
       const canAdvance = () => (
@@ -137,24 +178,75 @@
         if (!canAdvance()) return;
 
         timer = window.setInterval(() => {
-          showSlide(currentIndex + 1, false);
+          void showSlide(currentIndex + 1, false);
         }, SLIDE_INTERVAL);
       };
 
-      const showSlide = (index, restartTimer = true) => {
+      const pause = () => {
+        stopTimer();
+        if (transitionInProgress) {
+          transitionRequest += 1;
+          settleTransition();
+        }
+      };
+
+      const showSlide = async (
+        index,
+        restartTimer = true,
+        immediate = false
+      ) => {
         if (!loadedItems.length) return;
 
-        currentIndex = (index + loadedItems.length) % loadedItems.length;
-        loadedItems.forEach((item, itemIndex) => {
-          const isCurrent = itemIndex === currentIndex;
-          item.classList.toggle("is-active", isCurrent);
-          item.setAttribute("aria-hidden", String(!isCurrent));
-          item.setAttribute("tabindex", isCurrent ? "0" : "-1");
-        });
-        dots.forEach((dot, dotIndex) => {
-          const isCurrent = dotIndex === currentIndex;
-          dot.classList.toggle("is-active", isCurrent);
-          dot.setAttribute("aria-pressed", String(isCurrent));
+        const nextIndex = (index + loadedItems.length) % loadedItems.length;
+        const incoming = loadedItems[nextIndex];
+        const outgoing = loadedItems[currentIndex];
+        const request = ++transitionRequest;
+        const imageReady = await itemReadiness.get(incoming);
+
+        if (request !== transitionRequest || !imageReady) return;
+
+        if (transitionInProgress) settleTransition();
+
+        if (
+          immediate
+          || reducedMotionEnabled
+          || !outgoing
+          || outgoing === incoming
+        ) {
+          currentIndex = nextIndex;
+          loadedItems.forEach((item, itemIndex) => {
+            item.classList.toggle("is-active", itemIndex === currentIndex);
+            item.classList.remove("is-entering", "is-exiting");
+          });
+          updateSelection();
+          setStageHeight(incoming);
+          if (restartTimer) startTimer();
+          return;
+        }
+
+        transitionInProgress = true;
+        currentIndex = nextIndex;
+        incoming.classList.remove("is-exiting", "is-active");
+        incoming.classList.add("is-entering");
+        outgoing.classList.remove("is-entering", "is-exiting");
+        outgoing.classList.add("is-active");
+        updateSelection();
+
+        // Commit the incoming layer at opacity 0 before starting both fades.
+        void incoming.offsetWidth;
+
+        window.requestAnimationFrame(() => {
+          if (request !== transitionRequest) return;
+
+          incoming.classList.add("is-active");
+          outgoing.classList.remove("is-active");
+          outgoing.classList.add("is-exiting");
+          setStageHeight(incoming);
+
+          transitionTimer = window.setTimeout(
+            settleTransition,
+            FADE_DURATION + 50
+          );
         });
 
         if (restartTimer) startTimer();
@@ -162,11 +254,11 @@
 
       const selectItem = (item) => {
         const index = loadedItems.indexOf(item);
-        if (index >= 0) showSlide(index, false);
+        if (index >= 0) void showSlide(index, false, true);
       };
 
       const instance = {
-        pause: stopTimer,
+        pause,
         resume: startTimer,
         selectItem
       };
@@ -175,17 +267,17 @@
       items.forEach((item) => itemOwners.set(item, instance));
 
       previous.addEventListener("click", () => {
-        showSlide(currentIndex - 1);
+        void showSlide(currentIndex - 1);
       });
       next.addEventListener("click", () => {
-        showSlide(currentIndex + 1);
+        void showSlide(currentIndex + 1);
       });
 
       if (typeof window.IntersectionObserver === "function") {
         const observer = new IntersectionObserver((entries) => {
           visible = entries[0]?.isIntersecting === true;
           if (visible) startTimer();
-          else stopTimer();
+          else pause();
         }, { threshold: 0.15 });
         observer.observe(gallery);
       }
@@ -197,22 +289,49 @@
           return;
         }
 
-        const handleLoad = () => {
-          registerLoadedImage(item, image);
-          resolve();
-        };
-        const handleError = () => {
-          image.hidden = true;
+        let settled = false;
+
+        const finishPreparation = (imageReady) => {
+          if (settled) return;
+
+          settled = true;
+          window.clearTimeout(readinessTimer);
+          itemReadiness.set(item, Promise.resolve(imageReady));
+
+          if (imageReady) registerLoadedImage(item, image);
+          else image.hidden = true;
           resolve();
         };
 
+        const readinessTimer = window.setTimeout(() => {
+          finishPreparation(false);
+        }, IMAGE_READY_TIMEOUT);
+
+        const prepareImage = async () => {
+          let decoded = true;
+
+          if (typeof image.decode === "function") {
+            try {
+              await image.decode();
+            } catch {
+              decoded = image.complete && image.naturalWidth > 0;
+            }
+          }
+
+          finishPreparation(decoded && image.naturalWidth > 0);
+        };
+
+        const handleError = () => {
+          finishPreparation(false);
+        };
+
         if (image.complete) {
-          if (image.naturalWidth > 0) handleLoad();
+          if (image.naturalWidth > 0) void prepareImage();
           else handleError();
           return;
         }
 
-        image.addEventListener("load", handleLoad, { once: true });
+        image.addEventListener("load", () => void prepareImage(), { once: true });
         image.addEventListener("error", handleError, { once: true });
       }));
 
@@ -241,16 +360,19 @@
             dot.type = "button";
             dot.setAttribute("aria-label", `Show ${galleryName} photo ${index + 1}`);
             dot.setAttribute("aria-pressed", "false");
-            dot.addEventListener("click", () => showSlide(index));
+            dot.addEventListener("click", () => void showSlide(index));
             dotsContainer.append(dot);
             return dot;
           });
           controls.hidden = false;
         }
 
-        showSlide(0, false);
-        startTimer();
+        void showSlide(0, false, true).then(startTimer);
       });
+
+      window.addEventListener("resize", () => {
+        setStageHeight(loadedItems[currentIndex]);
+      }, { passive: true });
 
       return instance;
     };

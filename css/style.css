@@ -829,36 +829,57 @@ button, input, textarea, select { font: inherit; }
   text-transform: uppercase;
 }
 
-.scroll-indicator {
+.side-scroll-indicator {
+  position: fixed;
+  z-index: 40;
+  top: 50%;
+  right: max(2rem, env(safe-area-inset-right));
   display: flex;
-  width: fit-content;
+  width: 0.9rem;
   align-items: center;
   flex-direction: column;
-  gap: 0.45rem;
-  margin: clamp(1.5rem, 3.5vw, 2.5rem) auto 0;
+  gap: 0.65rem;
   color: var(--champagne);
   font-family: Arial, Helvetica, sans-serif;
-  opacity: 0.82;
+  opacity: 0;
   pointer-events: none;
   text-align: center;
+  transform: translateY(-50%);
   user-select: none;
+  visibility: hidden;
+  transition: opacity 320ms ease, visibility 0s linear 320ms;
 }
 
-.scroll-indicator__label {
-  font-size: clamp(0.65rem, 1.8vw, 0.72rem);
+.side-scroll-indicator[hidden] { display: none; }
+
+.side-scroll-indicator.is-visible {
+  opacity: 0.86;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.side-scroll-indicator__label {
+  font-size: 0.68rem;
   letter-spacing: 0.22em;
   line-height: 1;
   text-indent: 0.22em;
+  text-orientation: mixed;
   text-transform: uppercase;
+  writing-mode: vertical-rl;
 }
 
-.scroll-indicator__chevron {
-  width: 0.72rem;
-  height: 0.72rem;
+.side-scroll-indicator__chevron {
+  width: 0.62rem;
+  height: 0.62rem;
   border-right: 1px solid currentcolor;
   border-bottom: 1px solid currentcolor;
   transform: rotate(45deg);
-  animation: scroll-indicator-float 2s ease-in-out infinite;
+  animation: side-scroll-indicator-float 2s ease-in-out infinite;
+}
+
+body.has-open-lightbox .side-scroll-indicator {
+  opacity: 0;
+  visibility: hidden;
 }
 
 .our-story {
@@ -970,7 +991,10 @@ button, input, textarea, select { font: inherit; }
   display: grid;
   width: 100%;
   align-items: start;
-  background: transparent;
+  overflow: hidden;
+  border-radius: 0.25rem;
+  background: var(--ivory-light);
+  transition: height var(--slide-transition, 450ms) ease-in-out;
 }
 
 .gallery-item {
@@ -1054,25 +1078,44 @@ button, input, textarea, select { font: inherit; }
   position: absolute;
   top: 0;
   left: 50%;
+  z-index: 0;
   display: block;
+  backface-visibility: hidden;
   opacity: 0;
   pointer-events: none;
   transform: translateX(-50%);
   visibility: hidden;
-  transition:
-    opacity var(--slide-transition, 450ms) ease,
-    visibility 0s linear var(--slide-transition, 450ms);
+  transition: opacity var(--slide-transition, 450ms) ease-in-out;
+}
+
+.photo-slideshow.is-ready.has-images .gallery-item.is-loaded.is-active,
+.photo-slideshow.is-ready.has-images .gallery-item.is-loaded.is-entering,
+.photo-slideshow.is-ready.has-images .gallery-item.is-loaded.is-exiting {
+  will-change: opacity;
 }
 
 .photo-slideshow.is-ready.has-images .gallery-item.is-loaded.is-active {
-  position: relative;
-  top: auto;
-  left: auto;
+  z-index: 1;
   opacity: 1;
   pointer-events: auto;
-  transform: none;
   visibility: visible;
-  transition-delay: 0s;
+}
+
+.photo-slideshow.is-ready.has-images .gallery-item.is-loaded.is-entering {
+  z-index: 2;
+  opacity: 0;
+  visibility: visible;
+}
+
+.photo-slideshow.is-ready.has-images .gallery-item.is-loaded.is-entering.is-active {
+  opacity: 1;
+}
+
+.photo-slideshow.is-ready.has-images .gallery-item.is-loaded.is-exiting {
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  visibility: visible;
 }
 
 .photo-slideshow.is-ready.has-no-images .gallery-item:first-child {
@@ -1735,7 +1778,7 @@ body.has-open-lightbox { overflow: hidden; }
   75%, 100% { opacity: 1; transform: translate(-50%, -50%) rotate(45deg) scale(1); }
 }
 
-@keyframes scroll-indicator-float {
+@keyframes side-scroll-indicator-float {
   0%, 100% {
     opacity: 0.65;
     transform: translateY(0) rotate(45deg);
@@ -1748,12 +1791,11 @@ body.has-open-lightbox { overflow: hidden; }
 }
 
 @media (max-width: 47.999rem) {
-  .invitation {
-    padding-bottom: calc(clamp(2.25rem, 5svh, 3rem) + env(safe-area-inset-bottom));
-  }
-
-  .scroll-indicator--invitation {
-    margin-top: clamp(1.25rem, 3svh, 1.75rem);
+  .side-scroll-indicator {
+    top: auto;
+    right: max(0.6rem, env(safe-area-inset-right));
+    bottom: 24%;
+    transform: none;
   }
 
   .gifts { padding-bottom: 2.5rem; }
@@ -1964,7 +2006,7 @@ body.has-open-lightbox { overflow: hidden; }
 
   .welcome-overlay { transform: none; }
 
-  .scroll-indicator__chevron {
+  .side-scroll-indicator__chevron {
     animation: none;
     opacity: 0.82;
   }
