@@ -1807,19 +1807,28 @@ body.has-open-lightbox { overflow: hidden; }
     transform: none;
   }
 
-  .photo-slideshow {
-    position: relative;
-    left: 50%;
-    width: 94vw;
-    max-width: 94vw;
-    margin-inline: 0;
-    transform: translateX(-50%);
+  .our-story {
+    padding-right: max(0.5rem, env(safe-area-inset-right));
+    padding-left: max(0.5rem, env(safe-area-inset-left));
   }
 
-  .gallery-item.is-loaded { padding: 0.25rem; }
+  .photo-slideshow {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .gallery-item.is-loaded {
+    width: 100%;
+    padding: 0.2rem;
+  }
+
+  .gallery-item.is-loaded img {
+    width: 100%;
+    max-height: min(65svh, 36rem);
+  }
 
   .slideshow-controls {
-    margin-top: clamp(0.75rem, 2.5vw, 1.1rem);
+    margin-top: clamp(0.625rem, 2vw, 1rem);
   }
 
   .gifts { padding-bottom: 2.5rem; }
