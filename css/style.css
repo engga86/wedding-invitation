@@ -2006,17 +2006,51 @@ body.has-open-lightbox { overflow: hidden; }
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
-    animation-delay: 0ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    animation: none !important;
   }
 
   .opening.is-reduced .travel-map,
   .opening.is-reduced .place-label,
+  .opening.is-reduced .route,
   .opening.is-reduced .flight,
-  .opening.is-reduced .meeting-scene {
-    display: none;
+  .opening.is-reduced .meeting-marker,
+  .opening.is-reduced .meeting-scene,
+  .opening.is-reduced .wedding-scene,
+  .opening.is-reduced .heart,
+  .opening.is-reduced .opening__copy > *,
+  .opening.is-reduced .open-button {
+    transition-delay: 0ms !important;
+    transition-duration: 450ms !important;
+    transition-property: opacity !important;
+    transition-timing-function: ease !important;
+  }
+
+  .opening.is-reduced.is-intro .travel-map { opacity: 1; }
+
+  .opening.is-reduced.is-flight .route {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+
+  .opening.is-reduced.is-flight .flight { opacity: 1; }
+  .opening.is-reduced .flight { will-change: opacity; }
+  .opening.is-reduced .flight__float { transform: none; }
+
+  .opening.is-reduced .meeting-scene,
+  .opening.is-reduced .wedding-scene {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .opening.is-reduced.is-meeting .heart {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(45deg) scale(1);
+  }
+
+  .opening.is-reduced .opening__copy > * { transform: none; }
+
+  .opening.is-reduced .open-button,
+  .opening.is-reduced.is-invitation-ready .open-button {
+    transform: translateX(50%);
   }
 
   .welcome-overlay { transform: none; }

@@ -9,8 +9,14 @@
     FLIGHTS_START: 2000,
     MEETING_START: 5600,
     WEDDING_START: 7800,
-    INVITATION_REVEAL: 9200,
-    REDUCED_MOTION_REVEAL: 100
+    INVITATION_REVEAL: 9200
+  });
+
+  const REDUCED_SCENE_TIMING = Object.freeze({
+    TRAVELLERS_START: 1500,
+    MEETING_START: 3200,
+    WEDDING_START: 4900,
+    INVITATION_REVEAL: 6200
   });
 
   const SCENE_CLASSES = Object.freeze([
@@ -121,10 +127,22 @@
     console.info(`[Wedding Animation] Scene: ${sceneName}`);
   };
 
+  const showReducedScene = (sceneName, className) => {
+    elements.opening.classList.remove(...SCENE_CLASSES);
+    elements.opening.classList.add(className);
+    console.info(`[Wedding Animation] Reduced scene: ${sceneName}`);
+  };
+
   const revealInvitationButton = () => {
     elements.opening.classList.add("is-invitation-ready");
     elements.openButton.disabled = false;
     console.info("[Wedding Animation] Scene: invitation-ready");
+  };
+
+  const revealReducedInvitationButton = () => {
+    elements.opening.classList.add("is-invitation-ready");
+    elements.openButton.disabled = false;
+    console.info("[Wedding Animation] Reduced scene: invitation-ready");
   };
 
   const startOpeningAnimation = () => {
@@ -146,15 +164,30 @@
     );
 
     if (reducedMotionEnabled) {
+      console.info("[Wedding Animation] Mode: reduced");
       opening.classList.add("is-reduced");
-      schedule(() => {
-        if (!hasBegun) return;
-        showScene("wedding", "is-wedding");
-        revealInvitationButton();
-      }, SCENE_TIMING.REDUCED_MOTION_REVEAL);
+      void opening.offsetWidth;
+      showReducedScene("intro", "is-intro");
+      schedule(
+        () => showReducedScene("travellers", "is-flight"),
+        REDUCED_SCENE_TIMING.TRAVELLERS_START
+      );
+      schedule(
+        () => showReducedScene("meeting", "is-meeting"),
+        REDUCED_SCENE_TIMING.MEETING_START
+      );
+      schedule(
+        () => showReducedScene("wedding", "is-wedding"),
+        REDUCED_SCENE_TIMING.WEDDING_START
+      );
+      schedule(
+        revealReducedInvitationButton,
+        REDUCED_SCENE_TIMING.INVITATION_REVEAL
+      );
       return;
     }
 
+    console.info("[Wedding Animation] Mode: full");
     showScene("intro", "is-intro");
     schedule(() => showScene("flights", "is-flight"), SCENE_TIMING.FLIGHTS_START);
     schedule(() => showScene("meeting", "is-meeting"), SCENE_TIMING.MEETING_START);
