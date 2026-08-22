@@ -12,12 +12,7 @@
     INVITATION_REVEAL: 9200
   });
 
-  const REDUCED_SCENE_TIMING = Object.freeze({
-    TRAVELLERS_START: 1500,
-    MEETING_START: 3200,
-    WEDDING_START: 4900,
-    INVITATION_REVEAL: 6200
-  });
+  const REDUCED_CROSSFADE_DURATION = 650;
 
   const SCENE_CLASSES = Object.freeze([
     "is-intro",
@@ -79,8 +74,7 @@
       opening,
       welcomeOverlay,
       beginButton,
-      openingExperience,
-      openButton
+      openingExperience
     } = elements;
 
     clearAnimationTimers();
@@ -107,9 +101,9 @@
     welcomeOverlay.style.removeProperty("transition");
 
     beginButton.disabled = false;
-    openButton.disabled = true;
     openingExperience.setAttribute("aria-hidden", "true");
     openingExperience.setAttribute("inert", "");
+    document.documentElement.classList.remove("is-opening-active");
     document.documentElement.classList.add("is-awaiting-begin");
 
     const reducedMotionEnabled = userPrefersReducedMotion();
@@ -127,22 +121,21 @@
     console.info(`[Wedding Animation] Scene: ${sceneName}`);
   };
 
-  const showReducedScene = (sceneName, className) => {
-    elements.opening.classList.remove(...SCENE_CLASSES);
+  const showReducedScene = (sceneName, className, outgoingClasses = []) => {
     elements.opening.classList.add(className);
-    console.info(`[Wedding Animation] Reduced scene: ${sceneName}`);
+    console.info(`[Wedding Animation] Scene: ${sceneName}`);
+
+    if (!outgoingClasses.length) return;
+
+    schedule(() => {
+      elements.opening.classList.remove(...outgoingClasses);
+    }, REDUCED_CROSSFADE_DURATION);
   };
 
-  const revealInvitationButton = () => {
+  const revealScrollingExperience = () => {
     elements.opening.classList.add("is-invitation-ready");
-    elements.openButton.disabled = false;
+    document.documentElement.classList.remove("is-opening-active");
     console.info("[Wedding Animation] Scene: invitation-ready");
-  };
-
-  const revealReducedInvitationButton = () => {
-    elements.opening.classList.add("is-invitation-ready");
-    elements.openButton.disabled = false;
-    console.info("[Wedding Animation] Reduced scene: invitation-ready");
   };
 
   const startOpeningAnimation = () => {
@@ -150,12 +143,12 @@
 
     clearAnimationTimers();
     const reducedMotionEnabled = userPrefersReducedMotion();
-    const { opening, openingExperience, openButton } = elements;
+    const { opening, openingExperience } = elements;
 
     console.info(`[Wedding Experience] Reduced motion: ${reducedMotionEnabled}`);
     openingExperience.removeAttribute("inert");
     openingExperience.setAttribute("aria-hidden", "false");
-    openButton.disabled = true;
+    document.documentElement.classList.add("is-opening-active");
     opening.classList.remove(
       ...SCENE_CLASSES,
       "is-awaiting",
@@ -164,25 +157,33 @@
     );
 
     if (reducedMotionEnabled) {
-      console.info("[Wedding Animation] Mode: reduced");
+      console.info("[Wedding Animation] Mode: reduced-continuous");
       opening.classList.add("is-reduced");
       void opening.offsetWidth;
       showReducedScene("intro", "is-intro");
       schedule(
-        () => showReducedScene("travellers", "is-flight"),
-        REDUCED_SCENE_TIMING.TRAVELLERS_START
+        () => showReducedScene("flights", "is-flight", ["is-intro"]),
+        SCENE_TIMING.FLIGHTS_START
       );
       schedule(
-        () => showReducedScene("meeting", "is-meeting"),
-        REDUCED_SCENE_TIMING.MEETING_START
+        () => showReducedScene(
+          "meeting",
+          "is-meeting",
+          ["is-intro", "is-flight"]
+        ),
+        SCENE_TIMING.MEETING_START
       );
       schedule(
-        () => showReducedScene("wedding", "is-wedding"),
-        REDUCED_SCENE_TIMING.WEDDING_START
+        () => showReducedScene(
+          "wedding",
+          "is-wedding",
+          ["is-intro", "is-flight", "is-meeting"]
+        ),
+        SCENE_TIMING.WEDDING_START
       );
       schedule(
-        revealReducedInvitationButton,
-        REDUCED_SCENE_TIMING.INVITATION_REVEAL
+        revealScrollingExperience,
+        SCENE_TIMING.INVITATION_REVEAL
       );
       return;
     }
@@ -192,7 +193,7 @@
     schedule(() => showScene("flights", "is-flight"), SCENE_TIMING.FLIGHTS_START);
     schedule(() => showScene("meeting", "is-meeting"), SCENE_TIMING.MEETING_START);
     schedule(() => showScene("wedding", "is-wedding"), SCENE_TIMING.WEDDING_START);
-    schedule(revealInvitationButton, SCENE_TIMING.INVITATION_REVEAL);
+    schedule(revealScrollingExperience, SCENE_TIMING.INVITATION_REVEAL);
   };
 
   const dismissWelcomeOverlay = () => {
@@ -236,16 +237,6 @@
     dismissWelcomeOverlay();
   };
 
-  const handleOpenInvitation = () => {
-    if (!elements.opening.classList.contains("is-invitation-ready")) return;
-
-    elements.invitationContent.scrollIntoView({
-      behavior: userPrefersReducedMotion() ? "auto" : "smooth",
-      block: "start"
-    });
-    elements.invitationContent.focus({ preventScroll: true });
-  };
-
   const handleReducedMotionChange = (event) => {
     console.info(`[Wedding Experience] Reduced motion: ${event.matches}`);
     if (hasBegun) resetWeddingExperience();
@@ -274,10 +265,8 @@
     const welcomeOverlay = document.querySelector(".welcome-overlay");
     const beginButton = document.querySelector(".begin-button");
     const openingExperience = document.querySelector(".opening-experience");
-    const openButton = document.querySelector(".open-button");
-    const invitationContent = document.querySelector("#invitation-content");
 
-    if (!opening || !welcomeOverlay || !beginButton || !openingExperience || !openButton || !invitationContent) {
+    if (!opening || !welcomeOverlay || !beginButton || !openingExperience) {
       console.error("[Wedding Experience] Required opening elements not found");
       return;
     }
@@ -286,9 +275,7 @@
       opening,
       welcomeOverlay,
       beginButton,
-      openingExperience,
-      openButton,
-      invitationContent
+      openingExperience
     };
 
     if ("scrollRestoration" in window.history) {
@@ -301,7 +288,6 @@
     }
 
     beginButton.addEventListener("click", handleBegin);
-    openButton.addEventListener("click", handleOpenInvitation);
     window.addEventListener("pageshow", handlePageShow);
     window.addEventListener("pagehide", handlePageHide);
 
