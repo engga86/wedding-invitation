@@ -919,6 +919,83 @@ button, input, textarea, select { font: inherit; }
   outline-offset: 4px;
 }
 
+.event-details__arrival {
+  max-width: 24rem;
+  margin: clamp(1.1rem, 2.5svh, 1.5rem) auto 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.dress-code {
+  max-width: 28rem;
+  margin: clamp(2.75rem, 6svh, 4rem) auto 0;
+  padding-top: clamp(1.75rem, 4svh, 2.25rem);
+  border-top: 1px solid rgb(184 149 95 / 26%);
+}
+
+.dress-code h3 {
+  margin: 0;
+  color: var(--champagne);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  line-height: 1.5;
+}
+
+.dress-code__value {
+  margin: 0.65rem 0 0;
+  color: var(--charcoal);
+  font-size: clamp(1.15rem, 5vw, 1.4rem);
+  letter-spacing: 0.08em;
+}
+
+.dress-code__note {
+  margin: 0.65rem auto 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.dress-code__swatches {
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  gap: clamp(2rem, 8vw, 3.5rem);
+  margin: clamp(1.25rem, 4vw, 1.75rem) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dress-code__swatch {
+  display: grid;
+  min-width: 4.5rem;
+  justify-items: center;
+}
+
+.dress-code__colour {
+  display: block;
+  width: clamp(2.75rem, 13vw, 3.5rem);
+  aspect-ratio: 1;
+  border: 1px solid rgb(54 50 46 / 18%);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px rgb(255 250 241 / 16%);
+}
+
+.dress-code__colour--navy { background: #20264A; }
+.dress-code__colour--dusty-blue { background: #5F7899; }
+
+.dress-code__shade-label {
+  margin-top: 0.6rem;
+  color: var(--muted);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
+}
+
 .scripture {
   max-width: 28rem;
   margin: clamp(1.5rem, 3svh, 2.25rem) auto 0;
@@ -1586,36 +1663,16 @@ body.has-open-lightbox { overflow: hidden; }
   object-fit: contain;
 }
 
-.wedding-day {
+.closing-section {
   overflow-x: hidden;
   overflow-x: clip;
-  padding: 0 max(1.25rem, env(safe-area-inset-right)) clamp(4.5rem, 11vw, 7rem) max(1.25rem, env(safe-area-inset-left));
+  padding: clamp(3rem, 8vw, 5rem) max(1.25rem, env(safe-area-inset-right)) clamp(4.5rem, 11vw, 7rem) max(1.25rem, env(safe-area-inset-left));
   background:
     radial-gradient(circle at 10% 30%, rgb(216 195 159 / 11%), transparent 22rem),
     var(--ivory);
   text-align: center;
 }
 
-.wedding-day-transition {
-  display: flex;
-  width: min(12rem, 56vw);
-  align-items: center;
-  gap: 0.9rem;
-  margin-inline: auto;
-  padding-block: clamp(2.75rem, 8vw, 5rem) clamp(3rem, 8vw, 5rem);
-}
-
-.wedding-day-transition::before,
-.wedding-day-transition::after {
-  height: 1px;
-  flex: 1;
-  background: linear-gradient(to var(--line-direction, right), transparent, rgb(184 149 95 / 46%));
-  content: "";
-}
-
-.wedding-day-transition::after { --line-direction: left; }
-
-.wedding-day-transition span,
 .closing__ornament {
   width: 0.42rem;
   aspect-ratio: 1;
@@ -1623,153 +1680,11 @@ body.has-open-lightbox { overflow: hidden; }
   transform: rotate(45deg);
 }
 
-.wedding-day__inner {
-  width: min(100%, 42rem);
-  margin-inline: auto;
-}
-
-.wedding-day h2 {
-  margin: 0;
-  font-size: clamp(2rem, 9vw, 4rem);
-  font-weight: 400;
-  letter-spacing: 0.11em;
-  line-height: 1.08;
-}
-
-.wedding-day__header p {
-  max-width: 31rem;
-  margin: clamp(1.35rem, 4vw, 2rem) auto 0;
-  color: var(--charcoal);
-  font-size: clamp(1rem, 3.8vw, 1.12rem);
-  font-style: italic;
-  line-height: 1.65;
-}
-
-.wedding-day__schedule {
-  display: grid;
-  justify-items: center;
-  gap: 1.4rem;
-  margin-top: clamp(2.75rem, 7vw, 4.25rem);
-}
-
-.schedule-entry h3,
-.dress-code h3 {
-  margin: 0;
-  color: var(--champagne);
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 0.66rem;
-  font-weight: 400;
-  letter-spacing: 0.22em;
-  line-height: 1.5;
-}
-
-.schedule-entry p {
-  margin: 0.55rem 0 0;
-  color: var(--charcoal);
-  font-size: clamp(1.15rem, 5vw, 1.45rem);
-  font-weight: 400;
-  letter-spacing: 0.08em;
-}
-
-.schedule-divider {
-  width: 0.38rem;
-  aspect-ratio: 1;
-  border: 1px solid var(--champagne);
-  transform: rotate(45deg);
-}
-
-.wedding-day__venue {
-  margin-top: clamp(2.75rem, 7vw, 4.25rem);
-}
-
-.wedding-day__venue h3 {
-  margin: 0;
-  color: var(--charcoal);
-  font-size: clamp(1.3rem, 5.5vw, 1.75rem);
-  font-weight: 400;
-  letter-spacing: 0.08em;
-}
-
-.wedding-day__venue address {
-  margin-top: 0.55rem;
-  color: var(--muted);
-  font-size: 0.95rem;
-  font-style: normal;
-}
-
-.wedding-day__location-link { margin-top: 1.4rem; }
-
-.wedding-day__arrival {
-  max-width: 24rem;
-  margin: clamp(1.75rem, 5vw, 2.5rem) auto 0;
-  color: var(--muted);
-  font-size: 0.9rem;
-  font-style: italic;
-  line-height: 1.6;
-}
-
-.dress-code {
-  max-width: 28rem;
-  margin: clamp(2.75rem, 7vw, 4rem) auto 0;
-  padding-top: clamp(1.75rem, 4vw, 2.25rem);
-  border-top: 1px solid rgb(184 149 95 / 26%);
-}
-
-.dress-code__value {
-  margin: 0.65rem 0 0;
-  color: var(--charcoal);
-  font-size: clamp(1.15rem, 5vw, 1.4rem);
-  letter-spacing: 0.08em;
-}
-
-.dress-code__note {
-  margin: 0.65rem auto 0;
-  color: var(--muted);
-  font-size: 0.88rem;
-  line-height: 1.6;
-}
-
-.dress-code__swatches {
-  display: flex;
-  align-items: start;
-  justify-content: center;
-  gap: clamp(2rem, 8vw, 3.5rem);
-  margin: clamp(1.25rem, 4vw, 1.75rem) 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.dress-code__swatch {
-  display: grid;
-  min-width: 4.5rem;
-  justify-items: center;
-}
-
-.dress-code__colour {
-  display: block;
-  width: clamp(2.75rem, 13vw, 3.5rem);
-  aspect-ratio: 1;
-  border: 1px solid rgb(54 50 46 / 18%);
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 2px rgb(255 250 241 / 16%);
-}
-
-.dress-code__colour--navy { background: #20264a; }
-.dress-code__colour--dusty-blue { background: #5f7899; }
-
-.dress-code__shade-label {
-  margin-top: 0.6rem;
-  color: var(--muted);
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 0.58rem;
-  letter-spacing: 0.14em;
-  line-height: 1.4;
-}
-
 .closing {
   display: grid;
   justify-items: center;
-  margin-top: clamp(4rem, 10vw, 6.5rem);
+  width: min(100%, 42rem);
+  margin-inline: auto;
 }
 
 .closing__ornament { margin-bottom: 1.5rem; }
@@ -1966,18 +1881,13 @@ body.has-open-lightbox { overflow: hidden; }
   }
 
   .gifts { padding-bottom: 2.5rem; }
-  .wedding-day { padding-bottom: 3.25rem; }
+  .closing-section { padding-bottom: 3.25rem; }
 
   .story-transition {
     padding-block: 1.5rem 1.75rem;
   }
 
-  .gifts-transition,
-  .wedding-day-transition {
-    padding-block: 1.5rem 2rem;
-  }
-
-  .closing { margin-top: 3rem; }
+  .gifts-transition { padding-block: 1.5rem 2rem; }
 }
 
 @media (min-width: 48rem) {
@@ -2016,14 +1926,6 @@ body.has-open-lightbox { overflow: hidden; }
   .photo-group--engagement .photo-group__header {
     margin-left: 55%;
   }
-
-  .wedding-day__schedule {
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    align-items: center;
-    gap: clamp(2rem, 5vw, 3.5rem);
-  }
-
-  .schedule-entry { width: 100%; }
 
   .contribution-qr img { width: 15rem; }
 

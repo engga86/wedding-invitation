@@ -11,7 +11,7 @@
     <title>KYO SON &amp; AURA | Wedding Invitation</title>
     <link
       rel="stylesheet"
-      href="css/style.css?v=20260822-reduced-continuous-v2"
+      href="css/style.css?v=20260822-invitation-consolidation-v1"
     />
   </head>
   <body>
@@ -301,7 +301,7 @@
 
             <p class="event-details__ceremony">
               <span>Ceremony</span>
-              <strong>[TIME PLACEHOLDER]</strong>
+              <strong>[CEREMONY TIME]</strong>
             </p>
 
             <address class="event-venue">
@@ -318,6 +318,35 @@
             >
               View Location
             </a>
+
+            <p class="event-details__arrival">
+              Please arrive approximately 30 minutes before the ceremony.
+            </p>
+          </section>
+
+          <section class="dress-code" aria-labelledby="dress-code-title">
+            <h3 id="dress-code-title">DRESS CODE</h3>
+            <p class="dress-code__value">BLUE</p>
+            <p class="dress-code__note">Please wear shades of blue.</p>
+            <ul
+              class="dress-code__swatches"
+              aria-label="Example shades of blue"
+            >
+              <li class="dress-code__swatch">
+                <span
+                  class="dress-code__colour dress-code__colour--navy"
+                  aria-hidden="true"
+                ></span>
+                <span class="dress-code__shade-label">NAVY</span>
+              </li>
+              <li class="dress-code__swatch">
+                <span
+                  class="dress-code__colour dress-code__colour--dusty-blue"
+                  aria-hidden="true"
+                ></span>
+                <span class="dress-code__shade-label">DUSTY BLUE</span>
+              </li>
+            </ul>
           </section>
 
           <figure class="scripture">
@@ -768,86 +797,11 @@
         </div>
       </section>
 
-      <section
-        class="wedding-day"
-        id="wedding-day"
-        aria-labelledby="wedding-day-title"
-      >
-        <div class="wedding-day-transition" aria-hidden="true">
-          <span></span>
-        </div>
-
-        <div class="wedding-day__inner">
-          <header class="wedding-day__header">
-            <h2 id="wedding-day-title">THE WEDDING DAY</h2>
-            <p>We can't wait to celebrate this special day with you.</p>
-          </header>
-
-          <div class="wedding-day__schedule" aria-label="Wedding day schedule">
-            <section class="schedule-entry" aria-labelledby="ceremony-title">
-              <h3 id="ceremony-title">CEREMONY</h3>
-              <p>[CEREMONY TIME]</p>
-            </section>
-
-            <span class="schedule-divider" aria-hidden="true"></span>
-
-            <section class="schedule-entry" aria-labelledby="reception-title">
-              <h3 id="reception-title">RECEPTION</h3>
-              <p>[RECEPTION TIME]</p>
-            </section>
-          </div>
-
-          <section
-            class="wedding-day__venue"
-            aria-labelledby="wedding-day-venue"
-          >
-            <h3 id="wedding-day-venue">[VENUE NAME]</h3>
-            <address>Bataan, Philippines</address>
-            <a
-              class="location-link wedding-day__location-link"
-              href="https://www.google.com/maps/search/?api=1&amp;query=Bataan%2C%20Philippines"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="View wedding venue on Google Maps (opens in a new tab)"
-            >
-              View Location
-            </a>
-          </section>
-
-          <p class="wedding-day__arrival">
-            Please arrive approximately 30 minutes before the ceremony.
-          </p>
-
-          <section class="dress-code" aria-labelledby="dress-code-title">
-            <h3 id="dress-code-title">DRESS CODE</h3>
-            <p class="dress-code__value">BLUE</p>
-            <p class="dress-code__note">Please wear shades of blue.</p>
-            <ul
-              class="dress-code__swatches"
-              aria-label="Example shades of blue"
-            >
-              <li class="dress-code__swatch">
-                <span
-                  class="dress-code__colour dress-code__colour--navy"
-                  aria-hidden="true"
-                ></span>
-                <span class="dress-code__shade-label">NAVY</span>
-              </li>
-              <li class="dress-code__swatch">
-                <span
-                  class="dress-code__colour dress-code__colour--dusty-blue"
-                  aria-hidden="true"
-                ></span>
-                <span class="dress-code__shade-label">DUSTY BLUE</span>
-              </li>
-            </ul>
-          </section>
-
-          <div class="closing" id="closing">
-            <span class="closing__ornament" aria-hidden="true"></span>
-            <p>With love and gratitude,</p>
-            <strong>KYO SON &amp; AURA</strong>
-          </div>
+      <section class="closing-section" aria-label="Closing message">
+        <div class="closing" id="closing">
+          <span class="closing__ornament" aria-hidden="true"></span>
+          <p>With love and gratitude,</p>
+          <strong>KYO SON &amp; AURA</strong>
         </div>
       </section>
     </main>
@@ -912,14 +866,17 @@
       <span class="side-scroll-indicator__chevron"></span>
     </div>
 
-    <script src="js/music.js?v=20260822-reduced-continuous-v2"></script>
+    <script src="js/music.js?v=20260822-invitation-consolidation-v1"></script>
     <script
-      src="js/animation.js?v=20260822-reduced-continuous-v2"
+      src="js/animation.js?v=20260822-invitation-consolidation-v1"
       defer
     ></script>
-    <script src="js/gallery.js?v=20260822-reduced-continuous-v2" defer></script>
     <script
-      src="js/scroll-indicator.js?v=20260822-reduced-continuous-v2"
+      src="js/gallery.js?v=20260822-invitation-consolidation-v1"
+      defer
+    ></script>
+    <script
+      src="js/scroll-indicator.js?v=20260822-invitation-consolidation-v1"
       defer
     ></script>
   </body>
