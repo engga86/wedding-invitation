@@ -12,6 +12,7 @@
 
     let audioUnavailable = false;
     let playPending = false;
+    let awaitingGuest = true;
 
     audio.volume = MUSIC_VOLUME;
 
@@ -34,6 +35,14 @@
 
       playPromise.then(() => {
         playPending = false;
+        if (awaitingGuest) {
+          audio.pause();
+          try {
+            audio.currentTime = 0;
+          } catch (error) {
+            // Metadata may not be available yet; pausing is the important reset.
+          }
+        }
         updateControl();
       }).catch((error) => {
         playPending = false;
@@ -53,6 +62,7 @@
       if (audioUnavailable || playPending || (!audio.paused && !audio.ended)) return;
 
       console.info("[Wedding Music] User gesture activation");
+      awaitingGuest = false;
       playPending = true;
 
       try {
@@ -65,7 +75,24 @@
       }
     };
 
-    window.WeddingMusic = Object.freeze({ playFromUserGesture });
+    const resetToAwaitingGuest = () => {
+      awaitingGuest = true;
+      playPending = false;
+      audio.pause();
+
+      try {
+        audio.currentTime = 0;
+      } catch (error) {
+        // Metadata may not be available yet; pausing is the important reset.
+      }
+
+      updateControl();
+    };
+
+    window.WeddingMusic = Object.freeze({
+      playFromUserGesture,
+      resetToAwaitingGuest
+    });
 
     control.addEventListener("click", () => {
       if (audioUnavailable) return;
@@ -80,6 +107,10 @@
 
     audio.addEventListener("play", () => {
       playPending = false;
+      if (awaitingGuest) {
+        audio.pause();
+        return;
+      }
       updateControl();
       console.info("[Wedding Music] Playback started");
     });
